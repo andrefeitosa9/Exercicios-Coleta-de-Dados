@@ -1,0 +1,45 @@
+import requests
+from requests.exceptions import HTTPError
+from bs4 import BeautifulSoup
+
+# Exercício que pega a primeira notícia (título e subtítulo) no GE do Fortaleza (Depois fazer pegar todas)
+
+URL = 'https://ge.globo.com/ce/futebol/times/fortaleza/'
+
+# Ver se o site está funcionando
+
+try:
+    content = requests.get(URL)
+    content.raise_for_status()
+except HTTPError as exc:
+    print (exc)
+else:
+    # pegar o conteúdo da página e atribuir a uma variável
+    site = content.content
+
+# Transformar o conteúdo do site (variável site) em BeatifulSoup para poder utilizar o módulo bs4
+conteudo = BeautifulSoup(site, 'html.parser')
+
+# Pegando o HTML da primeira notícia
+
+noticia = conteudo.find('div',attrs={'class':'feed-post-body'})
+
+# pegar o conteúdo do título e atribuir a uma variável
+
+codigo_titulo_completo = noticia.find('div', attrs={'class':'feed-post-body-title gui-color-primary gui-color-hover'})
+
+titulo = codigo_titulo_completo.text
+
+# pegar o conteúdo do subtítulo e atribuir a uma variável
+
+codigo_subtitulo_completo = noticia.find('div', attrs={'class':'feed-post-body-resumo'})
+subtitulo = codigo_subtitulo_completo.text
+
+# criar um dicionário com título e subtítulo
+
+informacoes_noticia = {}
+informacoes_noticia['Título'] = titulo
+informacoes_noticia['Subtítulo'] = subtitulo
+
+print (informacoes_noticia)
+
